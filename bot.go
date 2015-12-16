@@ -88,6 +88,20 @@ func main() {
 	// Write GitHub status messages to the specified channels
 	http.Handle("/github", github)
 
+	// Health check handler
+	http.HandleFunc(
+		"/healthy",
+		func(w http.ResponseWriter, r *http.Request) {
+			if !myircbot.Connected() {
+				w.WriteHeader(http.StatusServiceUnavailable)
+				w.Write([]byte("IRC not connected"))
+				return
+			}
+
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("OK"))
+		})
+
 	// Start http server in a new thread
 	go launchhttpserver(config.GetHttpServerAddress())
 
