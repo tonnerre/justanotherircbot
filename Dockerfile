@@ -16,6 +16,10 @@ RUN cd /usr/local/src/github.com/julianec/justanotherircbot && protoc --go_out=.
 RUN cd /usr/local/src/github.com/julianec/justanotherircbot && go build
 RUN cd /usr/local/src/github.com/julianec/justanotherircbot && go install
 
+RUN addgroup --quiet --system --force-badname _ircbot
+RUN adduser --quiet --system --ingroup _ircbot --disabled-login --disabled-password --home /nonexistent --no-create-home --force-badname --gecos "Just another IRC bot" _ircbot
+
 # Default is to run justanotherircbot.
+USER _ircbot
 ENTRYPOINT ["/usr/local/bin/justanotherircbot"]
 CMD ["--config=/etc/justanotherircbot/justanotherircbot.conf"]
